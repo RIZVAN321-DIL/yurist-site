@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Юридическая консультация — Онлайн-запись</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { font-size: 18px; opacity: 0.8; }
+        .section {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .section h2 {
+            color: #1a1a2e;
+            border-bottom: 3px solid #c9a96e;
+            display: inline-block;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+        .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .service-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .service-card h3 { color: #1a1a2e; margin-bottom: 8px; }
+        .service-card .price { color: #c9a96e; font-size: 24px; font-weight: 700; }
+        .lawyers { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .lawyer-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .lawyer-card img {
+            width: 100px; height: 100px;
+            border-radius: 50%; object-fit: cover;
+            margin-bottom: 12px;
+        }
+        .lawyer-card h3 { color: #1a1a2e; }
+        .lawyer-card .exp { color: #888; font-size: 14px; }
+        .booking {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .booking h2 { display: block; border: none; margin-bottom: 30px; }
+        .step { display: none; }
+        .step.active { display: block; }
+        .option {
+            background: #f8f9fa;
+            padding: 16px;
+            margin: 10px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .option:hover { background: #e8f0fe; }
+        .option img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .option .info { flex: 1; text-align: left; }
+        .option .info b { display: block; font-size: 16px; }
+        .option .info span { color: #888; font-size: 13px; }
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+        .btn-next { background: #1a1a2e; color: white; }
+        .btn-next:hover { background: #16213e; }
+        .btn-confirm { background: #27ae60; color: white; }
+        .btn-confirm:hover { background: #219a52; }
+        .btn-back { background: #eee; color: #333; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+        .grid div {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .grid div:hover { background: #e8f0fe; }
+        .grid div.selected { background: #1a1a2e; color: white; }
+        .grid div.booked { background: #eee; color: #999; cursor: not-allowed; text-decoration: line-through; }
+        .summary { background: #f8f9fa; padding: 20px; border-radius: 12px; text-align: left; }
+        .summary-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-item.total { font-size: 20px; font-weight: 700; color: #27ae60; }
+        .success-box { text-align: center; padding: 40px; }
+        .success-box .icon { font-size: 64px; margin-bottom: 16px; }
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+        .footer p { opacity: 0.7; margin: 5px 0; }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(3, 1fr); }
+            .services, .lawyers { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>⚖️ ЮРИДИЧЕСКАЯ КОНСУЛЬТАЦИЯ</h1>
+        <p>Иванов, Петров и Партнёры — онлайн-запись 24/7</p>
+    </div>
+
+    <div class="section">
+        <h2>Наши услуги</h2>
+        <div class="services">
+            <div class="service-card"><h3>📋 Консультация</h3><p class="price">2 000₽</p><p style="color:#888;margin-top:8px">40 мин</p></div>
+            <div class="service-card"><h3>📝 Составление договора</h3><p class="price">5 000₽</p><p style="color:#888;margin-top:8px">60 мин</p></div>
+            <div class="service-card"><h3>⚖️ Сопровождение в суде</h3><p class="price">15 000₽</p><p style="color:#888;margin-top:8px">90 мин</p></div>
+            <div class="service-card"><h3>🏛️ Защита по уголовным делам</h3><p class="price">25 000₽</p><p style="color:#888;margin-top:8px">120 мин</p></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Наши специалисты</h2>
+        <div class="lawyers">
+            <div class="lawyer-card">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Иванов">
+                <h3>Иванов И.И.</h3>
+                <p class="exp">⭐ 4.9 | Опыт 15 лет</p>
+            </div>
+            <div class="lawyer-card">
+                <img src="https://i.pravatar.cc/150?img=12" alt="Петрова">
+                <h3>Петрова А.С.</h3>
+                <p class="exp">⭐ 4.8 | Опыт 10 лет</p>
+            </div>
+            <div class="lawyer-card">
+                <img src="https://i.pravatar.cc/150?img=13" alt="Сидоров">
+                <h3>Сидоров В.К.</h3>
+                <p class="exp">⭐ 4.7 | Опыт 8 лет</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="booking">
+            <h2>📅 Онлайн-запись</h2>
+
+            <div id="step1" class="step active">
+                <h3>Выберите услугу</h3>
+                <div id="services_list"></div>
+            </div>
+
+            <div id="step2" class="step">
+                <h3>Выберите специалиста</h3>
+                <div id="masters_list"></div>
+                <button class="btn-back" onclick="goTo(1)">← Назад</button>
+            </div>
+
+            <div id="step3" class="step">
+                <h3>Выберите дату</h3>
+                <div class="grid" id="dates_grid"></div>
+                <button class="btn-back" onclick="goTo(2)">← Назад</button>
+            </div>
+
+            <div id="step4" class="step">
+                <h3>Выберите время</h3>
+                <div class="grid" id="times_grid"></div>
+                <button class="btn-back" onclick="goTo(3)">← Назад</button>
+            </div>
+
+            <div id="step5" class="step">
+                <h3>Подтверждение</h3>
+                <div class="summary">
+                    <div class="summary-item"><span>Услуга</span><strong id="sm_svc"></strong></div>
+                    <div class="summary-item"><span>Специалист</span><strong id="sm_mst"></strong></div>
+                    <div class="summary-item"><span>Дата</span><strong id="sm_dt"></strong></div>
+                    <div class="summary-item"><span>Время</span><strong id="sm_tm"></strong></div>
+                    <div class="summary-item total"><span>Цена</span><strong id="sm_pr"></strong></div>
+                </div>
+                <button class="btn-back" onclick="goTo(4)">← Назад</button>
+                <button class="btn-confirm" id="cfbtn" onclick="confirmBooking()">Подтвердить запись</button>
+            </div>
+
+            <div id="success" class="step">
+                <div class="success-box">
+                    <div class="icon">✅</div>
+                    <h3>Запись подтверждена!</h3>
+                    <p style="margin-top:16px;color:#888;">Спасибо! Мы свяжемся с вами для подтверждения.</p>
+                    <button class="btn-next" onclick="location.reload()">Записаться ещё</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>📍 г. Киров, ул. Ленина, 10</p>
+        <p>📞 +7 (900) 123-45-67 | ✉️ info@yurist.ru</p>
+        <p style="margin-top:20px">© 2025 Юридическая консультация. Все права защищены.</p>
+    </div>
+
+    <script>
+        const API = 'https://твой-домен.bothost.tech'; // ЗАМЕНИ НА СВОЙ ДОМЕН
+        let state = { svc: null, mst: null, date: null, time: null };
+
+        async function api(url) {
+            const res = await fetch(API + url);
+            return res.json();
+        }
+
+        async function loadServices() {
+            const services = await api('/api/services');
+            const c = document.getElementById('services_list');
+            services.forEach(x => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<div class="info"><b>${x.name}</b><span>${x.duration} мин</span></div><strong>${x.price}₽</strong>`;
+                div.onclick = () => { state.svc = x; goTo(2); };
+                c.appendChild(div);
+            });
+        }
+
+        async function loadMasters() {
+            const masters = await api('/api/masters');
+            const c = document.getElementById('masters_list');
+            masters.forEach(x => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<img src="${x.photo || ''}" onerror="this.style.display='none'"><div class="info"><b>${x.name}</b><span>⭐${x.rating} | Опыт ${x.experience} лет</span></div>`;
+                div.onclick = () => { state.mst = x; goTo(3); };
+                c.appendChild(div);
+            });
+        }
+
+        function loadDates() {
+            const g = document.getElementById('dates_grid');
+            g.innerHTML = '';
+            const t = new Date();
+            for (let i = 0; i < 14; i++) {
+                const d = new Date(t);
+                d.setDate(t.getDate() + i);
+                const ds = d.toISOString().split('T')[0];
+                const div = document.createElement('div');
+                div.textContent = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', weekday: 'short' });
+                div.onclick = () => { state.date = ds; goTo(4); };
+                g.appendChild(div);
+            }
+        }
+
+        async function loadTimes() {
+            const g = document.getElementById('times_grid');
+            g.innerHTML = '';
+            const bk = await api(`/api/booked-slots?date=${state.date}&master_id=${state.mst.id}`);
+            const bt = bk.map(x => x.time);
+            for (let h = 10; h < 21; h++) {
+                for (let m = 0; m < 60; m += 30) {
+                    const tm = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                    const div = document.createElement('div');
+                    if (bt.includes(tm)) { div.className = 'booked'; div.textContent = tm; }
+                    else { div.textContent = tm; div.onclick = () => { state.time = tm; goTo(5); }; }
+                    g.appendChild(div);
+                }
+            }
+        }
+
+        function showSummary() {
+            document.getElementById('sm_svc').textContent = state.svc.name;
+            document.getElementById('sm_mst').textContent = state.mst.name;
+            document.getElementById('sm_dt').textContent = state.date;
+            document.getElementById('sm_tm').textContent = state.time;
+            document.getElementById('sm_pr').textContent = state.svc.price + '₽';
+        }
+
+        async function confirmBooking() {
+            const btn = document.getElementById('cfbtn');
+            btn.disabled = true;
+            btn.textContent = 'Создаём...';
+            const payload = {
+                telegram_id: 0, chat_id: 0,
+                first_name: 'Клиент с сайта',
+                service_id: state.svc.id,
+                master_id: state.mst.id,
+                date: state.date,
+                time: state.time
+            };
+            try {
+                const res = await fetch(API + '/api/book', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+                    document.getElementById('success').classList.add('active');
+                } else {
+                    alert(data.detail || 'Ошибка записи');
+                }
+            } catch (e) {
+                alert('Ошибка соединения');
+            }
+            btn.disabled = false;
+            btn.textContent = 'Подтвердить запись';
+        }
+
+        function goTo(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            if (step === 2) loadMasters();
+            if (step === 3) loadDates();
+            if (step === 4) loadTimes();
+            if (step === 5) showSummary();
+        }
+
+        loadServices();
+    </script>
+</body>
+</html>
