@@ -248,10 +248,10 @@
             });
         }
 
-        async function loadMasters() {
-            const masters = await api('/api/masters');
+        async function loadLawyers() {
+            const lawyers = await api('/api/lawyers');
             const c = document.getElementById('masters_list');
-            masters.forEach(x => {
+            lawyers.forEach(x => {
                 const div = document.createElement('div');
                 div.className = 'option';
                 div.innerHTML = `<img src="${x.photo || ''}" onerror="this.style.display='none'"><div class="info"><b>${x.name}</b><span>⭐${x.rating} | Опыт ${x.experience} лет</span></div>`;
@@ -278,7 +278,7 @@
         async function loadTimes() {
             const g = document.getElementById('times_grid');
             g.innerHTML = '';
-            const bk = await api(`/api/booked-slots?date=${state.date}&master_id=${state.mst.id}`);
+            const bk = await api(`/api/booked-slots?date=${state.date}&lawyer_id=${state.mst.id}`);
             const bt = bk.map(x => x.time);
             for (let h = 10; h < 21; h++) {
                 for (let m = 0; m < 60; m += 30) {
@@ -307,7 +307,7 @@
                 telegram_id: 0, chat_id: 0,
                 first_name: 'Клиент с сайта',
                 service_id: state.svc.id,
-                master_id: state.mst.id,
+                lawyer_id: state.mst.id,
                 date: state.date,
                 time: state.time
             };
@@ -334,7 +334,7 @@
         function goTo(step) {
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
             document.getElementById('step' + step).classList.add('active');
-            if (step === 2) loadMasters();
+            if (step === 2) loadLawyers();
             if (step === 3) loadDates();
             if (step === 4) loadTimes();
             if (step === 5) showSummary();
